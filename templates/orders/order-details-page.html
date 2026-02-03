@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 mb-1">Order #{{ order.id }}</h1>
+    <div class="text-muted small">Created: {{ order.created_at }}</div>
+  </div>
+  <span class="badge bg-info text-dark">{{ order.status }}</span>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Order info</h5>
+
+    {% if order.client %}
+      <p class="mb-2"><strong>Client:</strong> {{ order.client }}</p>
+    {% endif %}
+
+    {% if order.total_price %}
+      <p class="mb-2"><strong>Total:</strong> {{ order.total_price }}</p>
+    {% endif %}
+
+    <div class="d-grid gap-2 d-sm-flex mt-4">
+      <a class="btn btn-outline-dark" href="{% url 'orders:edit' order.id %}">
+        Edit
+      </a>
+      <a class="btn btn-success" href="{% url 'orders:status' order.id %}">
+        Change status
+      </a>
+      <a class="btn btn-danger" href="{% url 'orders:delete' order.id %}">
+        Delete
+      </a>
+      <a class="btn btn-secondary ms-sm-auto" href="{% url 'orders:order_list' %}">
+        Back
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
