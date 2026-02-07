@@ -1,19 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Orders{% endblock %}
+{% block header_subtitle %}Orders{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h1 class="h3 mb-0">Orders</h1>
-</div>
-
 <div class="card shadow-sm">
   <div class="card-body">
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
         <thead class="table-light">
           <tr>
-            <th>#</th>
-            <th>Created</th>
+            <th>Order number</th>
+            <th>Created at</th>
             <th>Status</th>
             <th class="text-end">Actions</th>
           </tr>

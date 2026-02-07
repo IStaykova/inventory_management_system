@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block header_subtitle %}Order details{% endblock %}
 {% block title %}Order #{{ order.id }}{% endblock %}
 
 {% block content %}
@@ -12,7 +13,7 @@
 
 <div class="card shadow-sm">
   <div class="card-body">
-    <h5 class="card-title mb-3">Order info</h5>
+    <h5 class="card-title mb-3">Order description.....</h5>
 
     {% if order.client %}
       <p class="mb-2"><strong>Client:</strong> {{ order.client }}</p>
