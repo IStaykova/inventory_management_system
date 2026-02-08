@@ -1,7 +1,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
-from inventory.forms import ProductForm
+from inventory.forms import ProductForm, ProductDeleteForm
 from inventory.models import Product
 
 def home_page(request: HttpRequest) -> HttpResponse:
@@ -14,6 +14,7 @@ def product_details(request: HttpRequest, pk, slug) -> HttpResponse:
 
 def product_create(request: HttpRequest) -> HttpResponse:
     form = ProductForm(request.POST or None, request.FILES or None)
+
     if request.method == "POST" and form.is_valid():
         product = form.save()
         return redirect('products:details', pk=product.pk, slug=product.slug)
@@ -22,4 +23,40 @@ def product_create(request: HttpRequest) -> HttpResponse:
         'form': form,
     }
     return render(request, 'inventory/product-create-page.html', context)
+
+def product_edit(request: HttpRequest, pk:int) -> HttpResponse:
+    product = get_object_or_404(Product, pk=pk)
+    form = ProductForm(request.POST or None, request.FILES or None, instance=product)
+
+    if request.method == "POST" and form.is_valid():
+        instance = form.save()
+        return redirect('products:details', pk=product.pk, slug=instance.slug)
+
+    context = {
+        'product': product,
+        'form': form,
+    }
+    return render(request, 'inventory/product-edit-page.html', context)
+
+def product_delete(request: HttpRequest, pk:int) -> HttpResponse:
+    product = Product.objects.get(pk=pk)
+    form = ProductDeleteForm(request.POST or None, request.FILES or None, instance=product)
+
+    if request.method == "POST" and form.is_valid():
+        product.delete()
+        return redirect('products:home')
+
+    context = {
+        'product': product,
+        'form': form,
+    }
+    return render(request, 'inventory/product-delete-page.html', context)
+
+
+
+
+
+
+
+
 
