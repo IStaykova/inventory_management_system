@@ -2,13 +2,16 @@
 {% block header_subtitle %}Products catalog{% endblock %}
 
 {% block content %}
-<form method="post" class="d-flex justify-content-center mb-4">
- <div class="input-group w-50">
-    <input type="text" name="query" placeholder="Search by name...">
-    <button class="btn btn-outline-dark">
-        <img src="/static/images/search.png" height="18" alt="img1">
+<form class="row gy-5 gx-6 align-items-center">
+  <div class="mb-3">
+    {{ form.name }}
+    <button class="btn btn-outline-dark" type="submit">
+      <img src="/static/images/search.png" height="25" alt="search">
     </button>
- </div>
+    <a href="{% url 'products:home' %}" class="btn btn-outline-dark">
+      <img src="/static/images/home_icon.png" height="25" alt="home">
+    </a>
+  </div>
 </form>
 <div class="container px-4 px-lg-5 mt-5">
     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">

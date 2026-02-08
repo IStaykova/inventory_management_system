@@ -18,3 +18,9 @@ class ProductForm(forms.ModelForm):
             'image': forms.FileInput(attrs={"class": "form-control"}),
             'category': forms.Select(attrs={"class": "form-select"}),
         }
+
+class SearchForm(forms.Form):
+    name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Search by name...'})
+    )
