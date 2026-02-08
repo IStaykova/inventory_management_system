@@ -18,11 +18,3 @@ class ProductForm(forms.ModelForm):
             'image': forms.FileInput(attrs={"class": "form-control"}),
             'category': forms.Select(attrs={"class": "form-select"}),
         }
-
-class ProductDeleteForm(ProductForm):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.required = False
-            field.widget.attrs['disabled'] = True
-            field.widget.attrs['readonly'] = True

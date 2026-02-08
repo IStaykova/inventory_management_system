@@ -1,18 +1,12 @@
-{% extends "base.html" %}
-{% block header_subtitle %}Delete product{% endblock %}
+{# expects: product #}
+<form method="post" action="{% url 'products:delete' product.pk %}" class="d-inline">
+  {% csrf_token %}
 
-{% block content %}
-<div class="container py-4">
-<form method="post">
-    {% csrf_token %}
-    {{ form }}
     <button type="button"
-            class="btn btn-danger"
+            class="btn btn-sm btn-outline-danger"
             data-bs-toggle="modal"
             data-bs-target="#exampleModal">Delete
     </button>
-
-    <a href="{% url 'products:home' %}" class="btn btn-dark">Back</a>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -31,5 +25,3 @@
     </div>
 
 </form>
-</div>
-{% endblock %}

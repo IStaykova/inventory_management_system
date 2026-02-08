@@ -30,7 +30,7 @@
 
     <div class="px-3 pb-3 pt-2 d-flex justify-content-center gap-2">
       <a class="btn btn-sm btn-outline-primary" href="{% url 'products:edit' product.pk %}">Edit</a>
-      <a class="btn btn-sm btn-outline-danger" href="{% url 'products:delete' product.pk %}">Delete</a>
+      {% include "partials/delete-modal.html" with product=product %}
       <a class="btn btn-sm btn-outline-dark" href="{% url 'products:home' %}">Back</a>
     </div>
 
