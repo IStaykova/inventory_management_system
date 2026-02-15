@@ -6,7 +6,7 @@ from inventory.models import Product
 
 def home_page(request: HttpRequest) -> HttpResponse:
     form = SearchForm(request.GET or None)
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('name')
 
     if request.GET and form.is_valid():
         searched_product_name = form.cleaned_data['name']
@@ -17,8 +17,6 @@ def home_page(request: HttpRequest) -> HttpResponse:
         "form": form,
     }
     return render(request, 'inventory/product-list.html', context )
-
-
 
 def product_details(request: HttpRequest, pk, slug) -> HttpResponse:
     product = get_object_or_404(Product, pk=pk, slug=slug)

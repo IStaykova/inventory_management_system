@@ -33,18 +33,22 @@
                 </div>
                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                     <div class="text-center">
-                        <a class="btn btn-outline-dark mt-auto"
-                           href="{% url 'products:details' product.pk product.slug %}">Details
-                        </a>
+                        <a class="btn btn-outline-dark mt-auto" href="{% url 'products:details' product.pk product.slug %}">Details</a>
+                        {% if product.stock_quantity > 0 %}
+                            <a class="btn btn-outline-dark mt-auto"
+                             href="{% url 'orders:create' product.pk %}">Buy</a>
+                            {% else %}
+                            <button class="btn btn-outline-secondary" disabled>Out of stock</button>
+                            {% endif %}
                     </div>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col mb-5">
-                    <div class="text-center">
-                        <h5 class="fw-bolder">No products in the inventory list!</h5>
-                    </div>
+            <div class="text-center">
+                <h5 class="fw-bolder">No products in the inventory list!</h5>
+            </div>
         </div>
         {% endfor %}
     </div>

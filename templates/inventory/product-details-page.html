@@ -18,8 +18,13 @@
       <div class="col-md-7">
         <div class="card-body position-sticky">
           <h3 class="card-title fw-bolder">{{ product.name }}</h3>
-          <p class="card-text text-muted mb-2">{{ product.description }}</p>
-          <div class="text-muted small mb-2">Quantity: {{ product.stock_quantity }}</div>
+          <p class="card-text text-muted mb-2">Description: {{ product.description }}</p>
+          <div class="text-muted small mb-2">
+              {% if product.stock_quantity < 1 %} Quantity: Not available
+              {% else %}
+              Quantity: {{ product.stock_quantity }}
+              {% endif %}
+          </div>
           <div class="text-muted small mb-2">Category: {{ product.category }}</div>
           <div class="mt-2">
             <span class="fw-bold fs-5">${{ product.price }}</span>

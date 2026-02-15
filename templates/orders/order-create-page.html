@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header_subtitle %}New order{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="row fw-bold border-bottom pb-2 mb-2">
+      <div class="col-6">Name</div>
+      <div class="col-2 text-end">Price</div>
+      <div class="col-2 text-end">Qty</div>
+      <div class="col-2 text-end">Total</div>
+    </div>
+
+    <div class="row align-items-start mb-3">
+      <div class="col-6">
+        {{ product.name }}
+        <div class="text-muted small">In stock: {{ product.stock_quantity }}</div>
+      </div>
+
+      <div class="col-2 text-end">
+        <span id="unit-price" data-price="{{ product.price }}">{{ product.price }}</span>
+      </div>
+
+      <div class="col-2 text-end">
+        {{ form.quantity }}
+        {% if form.quantity.errors %}
+          <div class="text-danger small mt-1">
+            {{ form.quantity.errors|striptags }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="col-2 text-end">
+        <strong id="total-price">{{ product.price }}</strong>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Customer name</label>
+      {{ form.customer_name }}
+      {% if form.customer_name.errors %}
+        <div class="text-danger small mt-1">
+          {{ form.customer_name.errors|striptags }}
+        </div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create order</button>
+    <a href="{% url 'products:home' %}" class="btn btn-dark">Back</a>
+  </form>
+</div>
+
+<script src="{% static 'js/total_price_calculation.js' %}"></script>
+{% endblock %}
