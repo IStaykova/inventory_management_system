@@ -3,24 +3,19 @@
 
 {% block content %}
 <div class="container" style="max-width: 650px;">
-  <div class="card shadow-sm mt-4">
-    <div class="card-body text-center">
-      <h2 class="h4 mb-2">Update order status</h2>
-
-      <p class="mb-1">Order: <strong>#{{ order.id }}</strong></p>
-      <p class="mb-4">
+    <form method="post" action="{% url 'orders:status' order.id %}">
+    {% csrf_token %}
+        <div class="card-body text-center">
+        <h2 class="h4 mb-2">Update order status</h2>
+        <p class="mb-1">Order: <strong>#{{ order.id }}</strong></p>
+        <p class="mb-4">
         Current status:
         <span class="badge bg-info text-dark">{{ order.status }}</span>
-      </p>
-
-      {# Later: make this a POST form that updates order.status #}
-      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <a class="btn btn-success" href="#">Mark as Completed (later)</a>
-        <a class="btn btn-outline-dark" href="{% url 'orders:details' order.id %}">Cancel</a>
-      </div>
-
-{#      <p class="text-muted small mt-3 mb-0"></p>  TODO: to check if I need this paragraph#}
-    </div>
-  </div>
+        </p>
+        {{ form.status }}
+        <button type="submit" class="btn btn-success mt-3">Save</button>
+        </div>
+    </form>
 </div>
+
 {% endblock %}

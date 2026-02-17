@@ -2,7 +2,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from inventory.models import Product
-from orders.forms import OrderAddProductForm
+from orders.forms import OrderAddProductForm, OrderStatusForm
 from orders.models import Order, OrderedProduct
 
 def order_list(request: HttpRequest) -> HttpResponse:
@@ -24,9 +24,21 @@ def order_details(request: HttpRequest, pk) -> HttpResponse:
 
 def order_status(request: HttpRequest, pk) -> HttpResponse:
     order = get_object_or_404(Order, pk=pk)
-    return render(request, 'orders/order-status-page.html', {'order': order})
 
+    if request.method == "POST":
+        form = OrderStatusForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect("orders:details", pk=order.pk)
+    else:
+        form = OrderStatusForm(instance=order)
+
+    return render(request, 'orders/order-status-page.html', {'order': order, 'form': form})
+
+#TODO: Refactor this view to handle authorization
 def order_edit(request: HttpRequest, pk) -> HttpResponse:
+    # if order.status != Order.Status.NEW:
+    #     return redirect("orders:details", pk=order.pk)
     order = get_object_or_404(Order, pk=pk)
     items = OrderedProduct.objects.filter(order=order).select_related('product')
     add_form = OrderAddProductForm()
@@ -34,7 +46,6 @@ def order_edit(request: HttpRequest, pk) -> HttpResponse:
 
 def order_delete(request: HttpRequest, pk):
     order = get_object_or_404(Order, pk=pk)
-
     if request.method == "POST":
         order.delete()
         return redirect("orders:order_list")
@@ -60,3 +71,4 @@ def order_create(request: HttpRequest, pk) -> HttpResponse:
     product.save()
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+

@@ -7,6 +7,7 @@
     <h1 class="h3 mb-1">Order #{{ order.id }}</h1>
     <div class="text-muted small">Client: {{ order.customer_name }}</div>
     <div class="text-muted small">Created: {{ order.created_at }}</div>
+        <span class="badge bg-info text-dark">{{ order.status }}</span>
     </div>
     </div>
 

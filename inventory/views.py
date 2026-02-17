@@ -3,6 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from inventory.forms import ProductForm, SearchForm
 from inventory.models import Product
+from inventory.utils.pricing import apply_sale_price
+
 
 def home_page(request: HttpRequest) -> HttpResponse:
     form = SearchForm(request.GET or None)
@@ -36,10 +38,17 @@ def product_create(request: HttpRequest) -> HttpResponse:
 
 def product_edit(request: HttpRequest, pk:int) -> HttpResponse:
     product = get_object_or_404(Product, pk=pk)
+    prev_price = product.price
+
     form = ProductForm(request.POST or None, request.FILES or None, instance=product)
 
     if request.method == "POST" and form.is_valid():
-        instance = form.save()
+        instance = form.save(commit=False)
+        apply_sale_price(instance, prev_price)
+
+        instance.save()
+        form.save_m2m()
+
         return redirect('products:details', pk=product.pk, slug=instance.slug)
 
     context = {
