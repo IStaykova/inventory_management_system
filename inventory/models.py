@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
 
-
 class Product(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(null=False, blank=True, editable=False)

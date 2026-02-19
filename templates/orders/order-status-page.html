@@ -1,13 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Order status #{{ order.id }}{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 650px;">
-    <form method="post" action="{% url 'orders:status' order.id %}">
+    <form method="post" action="{% url 'orders:status' order.order_number %}">
     {% csrf_token %}
         <div class="card-body text-center">
         <h2 class="h4 mb-2">Update order status</h2>
-        <p class="mb-1">Order: <strong>#{{ order.id }}</strong></p>
+        <p class="mb-1">Order: <strong>#{{ order.order_number|stringformat:'s'|slice:':8' }}</strong></p>
         <p class="mb-4">
         Current status:
         <span class="badge bg-info text-dark">{{ order.status }}</span>

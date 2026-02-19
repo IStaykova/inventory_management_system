@@ -18,12 +18,12 @@
         <tbody>
           {% for order in orders %}
             <tr>
-              <td class="fw-semibold">#{{ order.id }}</td>
+              <td class="fw-semibold">#{{ order.order_number|stringformat:'s'|slice:':8' }}</td>
               <td>{{ order.created_at }}</td>
               <td>{{ order.customer_name }}</td>
               <td><span class="badge bg-info text-dark">{{ order.status }}</span></td>
               <td class="text-end">
-                <a class="btn btn-outline-dark btn-sm" href="{% url 'orders:details' order.id %}">
+                <a class="btn btn-outline-dark btn-sm" href="{% url 'orders:details' order.order_number %}">
                   Details
                 </a>
               </td>

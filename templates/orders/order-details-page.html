@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 {% block header_subtitle %}Order details{% endblock %}
-{% block title %}Order #{{ order.id }}{% endblock %}
 
 {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-4"><div>
-    <h1 class="h3 mb-1">Order #{{ order.id }}</h1>
+    <h1 class="h3 mb-1">Order #{{ order.order_number|stringformat:'s'|slice:':8' }}</h1>
     <div class="text-muted small">Client: {{ order.customer_name }}</div>
     <div class="text-muted small">Created: {{ order.created_at }}</div>
         <span class="badge bg-info text-dark">{{ order.status }}</span>
@@ -39,9 +38,9 @@
     </div>
 
     <div class="d-grid gap-2 d-sm-flex mt-4">
-      <a class="btn btn-sm btn-outline-primary" href="{% url 'orders:edit' order.id %}">Edit</a>
-      <a class="btn btn-sm btn-outline-info" href="{% url 'orders:status' order.id %}">Change status</a>
-      <form method="post" action="{% url 'orders:delete' order.id %}" class="d-inline">
+      <a class="btn btn-sm btn-outline-primary" href="{% url 'orders:edit' order.order_number %}">Edit</a>
+      <a class="btn btn-sm btn-outline-info" href="{% url 'orders:status' order.order_number %}">Change status</a>
+      <form method="post" action="{% url 'orders:delete' order.order_number %}" class="d-inline">
           {% csrf_token %}
           <button type="submit" class="btn btn-sm btn-outline-warning">Delete</button>
       </form>
