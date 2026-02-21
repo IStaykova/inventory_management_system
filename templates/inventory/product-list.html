@@ -4,7 +4,7 @@
 {% block content %}
 <form class="row gy-5 gx-6 align-items-center">
     <div class="mb-3">
-        {{ form.name }}
+        {{ form.searched_name }}
         <button class="btn btn-outline-dark" type="submit">
         <img src="/static/images/search.png" height="25" alt="search">
         </button>
@@ -54,7 +54,7 @@
         {% empty %}
         <div class="col mb-5">
             <div class="text-center">
-            <h5 class="fw-bolder">No products in the inventory list!</h5>
+            <h5 class="fw-bolder">No products in the shop!</h5>
             </div>
         </div>
     {% endfor %}

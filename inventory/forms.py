@@ -22,7 +22,9 @@ class ProductForm(forms.ModelForm):
         }
 
 class SearchForm(forms.Form):
-    name = forms.CharField(
+    searched_name = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': 'Search by name...'})
+        min_length=2,
+        widget=forms.TextInput(attrs={'placeholder': 'Search by name...'}),
+        error_messages={"min_length": 'Please type at least 2 characters in the field.'}
     )

@@ -5,13 +5,12 @@ from inventory.forms import ProductForm, SearchForm
 from inventory.models import Product
 from inventory.utils.pricing import apply_sale_price
 
-
 def home_page(request: HttpRequest) -> HttpResponse:
     form = SearchForm(request.GET or None)
     products = Product.objects.all().order_by('name')
 
     if request.GET and form.is_valid():
-        searched_product_name = form.cleaned_data['name']
+        searched_product_name = form.cleaned_data['searched_name']
         products = products.filter(name__icontains=searched_product_name)
 
     context = {
