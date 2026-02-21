@@ -27,13 +27,11 @@ def product_details(request: HttpRequest, pk, slug) -> HttpResponse:
 def product_create(request: HttpRequest) -> HttpResponse:
     form = ProductForm(request.POST or None, request.FILES or None)
 
-    if request.method == "POST" and form.is_valid():
+    if form.is_valid():
         product = form.save()
         return redirect('products:details', pk=product.pk, slug=product.slug)
 
-    context = {
-        'form': form,
-    }
+    context = {'form': form}
     return render(request, 'inventory/product-create-page.html', context)
 
 def product_edit(request: HttpRequest, pk:int) -> HttpResponse:
@@ -42,19 +40,15 @@ def product_edit(request: HttpRequest, pk:int) -> HttpResponse:
 
     form = ProductForm(request.POST or None, request.FILES or None, instance=product)
 
-    if request.method == "POST" and form.is_valid():
+    if form.is_valid():
         instance = form.save(commit=False)
         apply_sale_price(instance, prev_price)
 
         instance.save()
         form.save_m2m()
-
         return redirect('products:details', pk=product.pk, slug=instance.slug)
 
-    context = {
-        'product': product,
-        'form': form,
-    }
+    context = {'product': product,'form': form,}
     return render(request, 'inventory/product-edit-page.html', context)
 
 def product_delete(request: HttpRequest, pk:int) -> HttpResponse:

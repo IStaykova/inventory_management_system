@@ -1,5 +1,6 @@
 import uuid
 
+from django.core.validators import MinLengthValidator, MinValueValidator
 from django.db import models
 
 class Order(models.Model):
@@ -10,7 +11,7 @@ class Order(models.Model):
         CANCELED = 'CANCELED', 'Canceled'
 
     order_number = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    customer_name = models.CharField(max_length=100)
+    customer_name = models.CharField(max_length=100, validators=[MinLengthValidator(2)])
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=12, choices=Status.choices, default=Status.NEW)
 
@@ -20,7 +21,7 @@ class Order(models.Model):
 class OrderedProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order')
     product = models.ForeignKey("inventory.Product", on_delete=models.CASCADE, related_name="order_products")
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:

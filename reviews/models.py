@@ -1,12 +1,13 @@
+from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
 from django.db import models
 
 from inventory.models import Product
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
-    author_name = models.CharField(max_length=60)
-    rating = models.PositiveSmallIntegerField()
-    text = models.TextField()
+    author_name = models.CharField(max_length=60, validators=[MinLengthValidator(2)])
+    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    text = models.TextField(validators=[MinLengthValidator(10)])
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

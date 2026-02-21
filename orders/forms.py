@@ -7,9 +7,7 @@ class OrderCustomerForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ["customer_name"]
-        widgets = {
-            "customer_name": forms.TextInput(attrs={"class": "form-control"})
-        }
+        widgets = {"customer_name": forms.TextInput(attrs={"class": "form-control"})}
 
 class OrderAddProductForm(forms.Form):
     product = forms.ModelChoiceField(
