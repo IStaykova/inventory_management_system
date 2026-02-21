@@ -18,7 +18,6 @@ urlpatterns = [
         path('inc/<int:product_id>/', order_inc_item_qty, name='inc'),
         path('dec/<int:product_id>/', order_dec_item_qty, name='dec'),
         path('remove/<int:product_id>/', order_remove_item, name='remove_item'),
-
     ])),
 
     ]

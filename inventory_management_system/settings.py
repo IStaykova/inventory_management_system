@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 PROJECT_APPS = [
     'inventory',
     'orders',
-    'reports',
+    'reviews',
 ]
 # Application definition
 

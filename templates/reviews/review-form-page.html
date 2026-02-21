@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container py-3" style="max-width: 700px;">
+  <h3 class="mb-3">{% if form.instance.pk %}Edit{% else %}Add{% endif %} review for {{ product.name }}</h3>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label class="form-label">Your name</label>
+      {{ form.author_name }}
+      {% if form.author_name.errors %}<div class="text-danger small">{{ form.author_name.errors.0 }}</div>{% endif %}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Rating (1–5)</label>
+      {{ form.rating }}
+      {% if form.rating.errors %}<div class="text-danger small">{{ form.rating.errors.0 }}</div>{% endif %}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Review</label>
+      {{ form.text }}
+      {% if form.text.errors %}<div class="text-danger small">{{ form.text.errors.0 }}</div>{% endif %}
+    </div>
+
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-outline-secondary" href="{% url 'reviews:product_reviews' product.pk %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

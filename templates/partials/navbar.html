@@ -5,7 +5,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'products:home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'products:create' %}">Create Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'products:create' %}">Add product</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="{% url 'orders:order_list' %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orders</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -15,7 +15,7 @@
                         <li><a class="dropdown-item" href="#">Completed Orders</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#">Reports</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'reviews:top_products' %}">Reviews</a></li>
             </ul>
                 <a class="btn btn-outline-dark"
                 href="{% if cart_order %}{% url 'orders:details' cart_order.order_number %}{% else %}#{% endif %}">
