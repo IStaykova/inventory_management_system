@@ -42,7 +42,8 @@
       <a class="btn btn-sm btn-outline-info" href="{% url 'orders:status' order.order_number %}">Change status</a>
       <form method="post" action="{% url 'orders:delete' order.order_number %}" class="d-inline">
           {% csrf_token %}
-          <button type="submit" class="btn btn-sm btn-outline-warning">Delete</button>
+          <button type="submit" class="btn btn-sm btn-outline-warning"
+          onclick="return confirm('Are you sure you want to delete?')">Delete</button>
       </form>
       <a class="btn btn-sm btn-outline-dark" href="{% url 'orders:order_list' %}">Back</a>
     </div>

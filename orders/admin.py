@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from orders.models import Order
+from orders.models import Order, OrderedProduct
 
 
 @admin.register(Order)
@@ -9,5 +9,9 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ('status', 'created_at')
     search_fields = ('order_number', 'customer_name')
     ordering = ('-created_at',)
+
+@admin.register(OrderedProduct)
+class OrderedProductAdmin(admin.ModelAdmin):
+    list_display = ('order', 'product_id', 'quantity')
 
     

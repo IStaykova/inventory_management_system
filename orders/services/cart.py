@@ -3,7 +3,6 @@ from django.db import transaction
 from inventory.models import Product
 from orders.models import Order, OrderedProduct
 
-
 class CartError(Exception):
     pass
 
@@ -38,7 +37,7 @@ def increase_item_qty(order: Order, product_id: int) -> None:
     is_cart_editable(order)
     product = Product.objects.select_for_update().get(pk=product_id)
     if product.stock_quantity <= 0:
-        raise CartError('Out of stock!')
+        raise CartError('Not enough quantity in stock!')
 
     item, _ = OrderedProduct.objects.get_or_create(
         order=order,

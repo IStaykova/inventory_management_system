@@ -1,52 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container py-3">
-        {% if added_message %}
-        <div class="alert alert-success py-2 mb-3">{{ added_message }}</div>
-        {% endif %}
-
     <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2>Order #{{ order.order_number|stringformat:'s'|slice:':8' }}</h2>
+        <h3>Order #{{ order.order_number|stringformat:'s'|slice:':8' }}</h3>
     </div>
-    <h3>Items:</h3>
+    <h5>Items:</h5>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="text-danger small">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
     <div class="list-group list-group-flush">
     {% for i in items %}
-      <div class="list-group-item d-flex align-items-center gap-3
+    <div class="list-group-item d-flex align-items-center gap-3
         {% if added_product_id and added_product_id == i.product.pk %}
         bg-success-subtle border-success
-        {% endif %}">
+    {% endif %}">
 
       <div class="me-auto">
         <div class="fw-semibold">{{ i.product.name }}</div>
         <div class="text-muted small">Unit: ${{ i.unit_price }}</div>
       </div>
 
-    <div class="d-flex align-items-center gap-2">
-    <form method="post" action="{% url 'orders:dec' order.order_number i.product.id %}" class="m-0">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-sm btn-outline-secondary">−</button>
-    </form>
-    <span class="badge text-bg-dark px-3 py-2">{{ i.quantity }}</span>
-    <form method="post" action="{% url 'orders:inc' order.order_number i.product.id %}" class="m-0">
-      {% csrf_token %}
-      {% if i.product.stock_quantity <= 0 %}
-      <button type="submit" class="btn btn-sm btn-outline-primary" disabled title="Out of stock..">+</button>
-        {% else %}
-      <button type="submit" class="btn btn-sm btn-outline-primary">+</button>
-        {% endif %}
-    </form>
-{#    {% if i.product.stock_quantity <= 0 %}#}
-{#        <span class="text-danger small ms-2">Out of stock!</span>#}
-{#    {% endif %}#}
-    <form method="post" action="{% url 'orders:remove_item' order.order_number i.product.id %}" class="m-0">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove">🗑</button>
-    </form>
+        <div class="d-flex align-items-center gap-2">
+        <form method="post" action="{% url 'orders:dec' order.order_number i.product_id %}" class="m-0">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-secondary">−</button>
+        </form>
+        <span class="badge text-bg-dark px-3 py-2">{{ i.quantity }}</span>
+        <form method="post" action="{% url 'orders:inc' order.order_number i.product_id %}" class="m-0">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-primary">+</button>
+        </form>
+        <form method="post" action="{% url 'orders:remove_item' order.order_number i.product_id %}" class="m-0">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-danger" title="Remove"
+                  onclick="return confirm('Are you sure you want to delete?')">🗑</button>
+        </form>
+        </div>
     </div>
-    </div>
-
-    {% empty %}
-    <div class="list-group-item text-muted">No items yet.</div>
     {% endfor %}
     </div>
 
@@ -55,28 +48,19 @@
     <form method="post" action="{% url 'orders:add_item' order.order_number %}" class="row g-2 align-items-end">
         {% csrf_token %}
          <div class="col-12 col-md-7">
-          <label class="form-label mb-1">Product</label>{{ add_form.product }}
-         {% if add_form.product.errors %}
-             <div class="text-danger small mt-1">{{ add_form.product.errors.0 }}</div>
-         {% endif %}
+          <label class="form-label mb-1">Product</label>
+             {{ add_form.product }}
+             {% if add_form.product.errors %}<div class="text-danger small">{{ add_form.product.errors.0 }}</div>{% endif %}
         </div>
         <div class="col-12 col-md-3">
           <label class="form-label mb-1">Qty</label>{{ add_form.quantity }}
+            {% if add_form.quantity.errors %}<div class="text-danger small">{{ add_form.quantity.errors.0 }}</div>{% endif %}
         </div>
         <div class="col-12 col-md-2 d-grid">
           <button class="btn btn-primary" type="submit">Add</button>
         </div>
     </form>
-
-    <a class="btn btn-sm btn-outline-secondary"
-       href="{% url 'orders:details' order.order_number %}">Back</a>
-    {% if add_form.non_field_errors %}
-    <div class="text-danger small mt-2">
-        {{ add_form.non_field_errors }}
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'orders:details' order.order_number %}">Back</a>
     </div>
-    {% endif %}
-
-    </div>
-    </div>
-
+</div>
 {% endblock %}

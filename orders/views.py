@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -76,10 +77,9 @@ def order_add_item(request, order_number) -> HttpResponse:
         form = OrderAddProductForm(request.POST)
         if form.is_valid():
             try:
-                cart.add_cart_item(order, form.cleaned_data['product'],
-                                   form.cleaned_data['quantity'])
-            except cart.CartError:
-                pass
+                cart.add_cart_item(order, form.cleaned_data['product'], form.cleaned_data['quantity'])
+            except cart.CartError as e:
+                messages.error(request, str(e))
 
     return redirect('orders:edit', order_number=order.order_number)
 
@@ -88,8 +88,9 @@ def order_inc_item_qty(request, order_number, product_id) -> HttpResponse:
     if request.method == "POST":
         try:
             cart.increase_item_qty(order, product_id)
-        except cart.CartError:
-            pass
+        except cart.CartError as e:
+            list(messages.get_messages(request))
+            messages.error(request, str(e))
 
     return redirect('orders:edit', order_number=order.order_number)
 
@@ -98,8 +99,11 @@ def order_dec_item_qty(request, order_number, product_id) -> HttpResponse:
     if request.method == "POST":
         try:
             cart.decrease_item_qty(order, product_id)
-        except cart.CartError:
-            pass
+            if not OrderedProduct.objects.filter(order=order).exists():
+                order.delete()
+                return redirect('orders:order_list')
+        except cart.CartError as e:
+            messages.error(request, str(e))
 
     return redirect('orders:edit', order_number=order.order_number)
 
@@ -108,8 +112,11 @@ def order_remove_item(request, order_number, product_id) -> HttpResponse:
     if request.method == "POST":
         try:
             cart.remove_cart_item(order, product_id)
-        except cart.CartError:
-            pass
+            if not OrderedProduct.objects.filter(order=order).exists():
+                order.delete()
+                return redirect('orders:order_list')
+        except cart.CartError as e:
+            messages.error(request, str(e))
 
     return redirect('orders:edit', order_number=order.order_number)
 

@@ -15,8 +15,8 @@
             <th class="text-end">Actions</th>
           </tr>
         </thead>
+      {% for order in orders %}
         <tbody>
-          {% for order in orders %}
             <tr>
               <td class="fw-semibold">#{{ order.order_number|stringformat:'s'|slice:':8' }}</td>
               <td>{{ order.created_at }}</td>
@@ -28,12 +28,13 @@
                 </a>
               </td>
             </tr>
-          {% empty %}
-            <tr>
-              <td colspan="4" class="text-center text-muted py-4">No current orders.</td>
-            </tr>
-          {% endfor %}
         </tbody>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="text-center text-muted py-4">No current orders.</td>
+        </tr>
+      {% endfor %}
+
       </table>
     </div>
   </div>
