@@ -1,60 +1,56 @@
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, ListView
 
 from inventory.forms import ProductForm, SearchForm
 from inventory.models import Product
 from inventory.utils.pricing import apply_sale_price
 
-def home_page(request: HttpRequest) -> HttpResponse:
-    form = SearchForm(request.GET or None)
-    products = Product.objects.all().order_by('name')
+class ProductListView(ListView):
+    model = Product
+    template_name = 'inventory/product-list.html'
+    context_object_name = 'products'
 
-    if request.GET and form.is_valid():
-        searched_product_name = form.cleaned_data['searched_name']
-        products = products.filter(name__icontains=searched_product_name)
+    def get_queryset(self):
+        queryset = super().get_queryset()
 
-    context = {
-        "products": products,
-        "form": form,
-    }
-    return render(request, 'inventory/product-list.html', context )
+        if 'searched_name' in self.request.GET:
+            queryset = queryset.filter(name__icontains=self.request.GET.get('searched_name'))
+        return queryset
 
-def product_details(request: HttpRequest, pk, slug) -> HttpResponse:
-    product = get_object_or_404(Product, pk=pk, slug=slug)
-    return render(request, 'inventory/product-details-page.html', {'product': product})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SearchForm(self.request.GET)
+        return  context
 
-def product_create(request: HttpRequest) -> HttpResponse:
-    form = ProductForm(request.POST or None, request.FILES or None)
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'inventory/product-details-page.html'
 
-    if form.is_valid():
-        product = form.save()
-        return redirect('products:details', pk=product.pk, slug=product.slug)
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'inventory/product-create-page.html'
 
-    context = {'form': form}
-    return render(request, 'inventory/product-create-page.html', context)
+    def get_success_url(self):
+        return reverse('products:details', kwargs={'slug': self.object.slug})
 
-def product_edit(request: HttpRequest, pk:int) -> HttpResponse:
-    product = get_object_or_404(Product, pk=pk)
-    prev_price = product.price
+class ProductEditView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'inventory/product-edit-page.html'
 
-    form = ProductForm(request.POST or None, request.FILES or None, instance=product)
+    def form_valid(self, form):
+        prev_price = self.get_object().price
+        apply_sale_price(form.instance, prev_price)
 
-    if form.is_valid():
-        instance = form.save(commit=False)
-        apply_sale_price(instance, prev_price)
+        return super().form_valid(form)
 
-        instance.save()
-        form.save_m2m()
-        return redirect('products:details', pk=product.pk, slug=instance.slug)
+    def get_success_url(self):
+        return reverse('products:details', kwargs={'slug': self.object.slug})
 
-    context = {'product': product,'form': form,}
-    return render(request, 'inventory/product-edit-page.html', context)
-
-def product_delete(request: HttpRequest, pk:int) -> HttpResponse:
-    Product.objects.get(pk=pk).delete()
-    return redirect('products:home')
-
-
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('products:home')
 
 
 

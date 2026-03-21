@@ -1,14 +1,15 @@
 from django.urls import path, include
-from inventory.views import home_page, product_details, product_create, product_edit, product_delete
+from inventory.views import ProductCreateView, ProductEditView, ProductDetailView, ProductDeleteView, ProductListView
 
 app_name = 'products'
+
 urlpatterns = [
-    path('', home_page, name='home'),
-    path('create/', product_create, name='create'),
-    path('<int:pk>/details/<slug:slug>/', product_details, name='details'),
+    path('', ProductListView.as_view(), name='home'),
+    path('create/', ProductCreateView.as_view(), name='create'),
+    path('details/<slug:slug>/', ProductDetailView.as_view(), name='details'),
 
     path('<int:pk>/', include([
-        path('edit/', product_edit, name='edit'),
-        path('delete/', product_delete, name='delete'),
+        path('edit/', ProductEditView.as_view(), name='edit'),
+        path('delete/', ProductDeleteView.as_view(), name='delete'),
     ])),
 ]

@@ -41,7 +41,7 @@
             </div>
                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                 <div class="text-center">
-                <a class="btn btn-outline-dark mt-auto" href="{% url 'products:details' product.pk product.slug %}">Details</a>
+                <a class="btn btn-outline-dark mt-auto" href="{% url 'products:details' product.slug %}">Details</a>
                 {% if product.stock_quantity > 0 %}
                 <a class="btn btn-outline-dark mt-auto"
                 href="{% url 'orders:create' product.pk %}">Buy</a>

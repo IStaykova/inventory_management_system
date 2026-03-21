@@ -1,4 +1,4 @@
-{# expects: product #}
+
 <form method="post" action="{% url 'products:delete' product.pk %}" class="d-inline">
   {% csrf_token %}
 
