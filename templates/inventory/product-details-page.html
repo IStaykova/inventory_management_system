@@ -10,10 +10,10 @@
     <div class="row g-10">
       <div class="col-md-5">
         {% if product.image %}
-        <img class="img-fluid w-100 h-100" style="object-fit: cover;" src="{{ product.image.url }}" alt="{{ product.name }}">
+        <img class="img-fluid" style="max-width: 200px;" src="{{ product.image.url }}" alt="{{ product.name }}">
       </div>
         {% else %}
-        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="No image uploaded" />
+        <img class="img-fluid" style="max-width: 200px;" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="No image uploaded" />
         {% endif %}
 
       <div class="col-md-7">
@@ -35,9 +35,11 @@
     </div>
 
     <div class="px-3 pb-3 pt-2 d-flex justify-content-center gap-2">
+    {% if request.user.is_authenticated and request.user.is_staff %}
       <a class="btn btn-sm btn-outline-primary" href="{% url 'products:edit' product.pk %}">Edit</a>
       {% include "partials/delete-modal.html" with product=product %}
-      <a class="btn btn-sm btn-outline-warning" href="{% url 'reviews:product_reviews' product.pk %}"> View reviews</a>
+    {% endif %}
+      <a class="btn btn-sm btn-outline-warning" href="{% url 'reviews:product_reviews' product.pk %}"> Reviews</a>
       <a class="btn btn-sm btn-outline-dark" href="{% url 'products:home' %}">Back</a>
     </div>
 

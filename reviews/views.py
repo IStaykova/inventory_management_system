@@ -1,64 +1,86 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models.aggregates import Avg
-from django.http import HttpResponse, HttpRequest
-from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from inventory.models import Product
 from reviews.forms import ReviewForm
 from reviews.models import Review
 
-def product_reviews(request: HttpRequest, product_id:int) -> HttpResponse:
-    product = get_object_or_404(Product, pk=product_id)
-    reviews = product.reviews.all()
-    avg_rating = reviews.aggregate(avg=Avg('rating'))['avg']
-    return render(request, 'reviews/product-reviews-page.html', {
-                'product':product,
-                'reviews': reviews,
-                'avg_rating': avg_rating,
-            })
+class ProductReviewListView(ListView):
+    model = Review
+    template_name = 'reviews/product-reviews-page.html'
+    context_object_name = 'reviews'
 
-def review_create(request: HttpRequest, product_id: int) -> HttpResponse:
-    product = get_object_or_404(Product, pk=product_id)
-    form = ReviewForm(request.POST or None)
+    def get_queryset(self):
+        return Review.objects.filter(product_id=self.kwargs['product_id'])
 
-    if form.is_valid():
-        review = form.save(commit=False)
-        review.product = product
-        review.save()
-        return redirect('reviews:product_reviews', product_id=product.pk)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = Product.objects.get(pk=self.kwargs['product_id'])
+        context['avg_rating'] = context['reviews'].aggregate(avg=Avg('rating'))['avg']
 
-    return render(request, 'reviews/review-form-page.html', {
-            'product': product,
-            'form': form,
-        })
+        return context
 
-def review_edit(request: HttpRequest, pk: int) -> HttpResponse:
-    review = get_object_or_404(Review, pk=pk)
-    form = ReviewForm(request.POST or None, instance=review)
+class TopReviewsListView(ListView):
+    model = Product
+    template_name = 'reviews/top-product-page.html'
+    context_object_name = 'products'
+    paginate_by = 3
 
-    if form.is_valid():
-        form.save()
-        return redirect('reviews:product_reviews', product_id=review.product_id)
+    def get_queryset(self):
+        return (
+            Product.objects
+            .annotate(avg_rating=Avg('reviews__rating'))
+            .exclude(avg_rating=None)
+            .order_by('-avg_rating')
+        )
 
-    return render(request, 'reviews/review-form-page.html', {
-            'product': review.product,
-            'form': form,
-        })
+class ReviewCreateView(LoginRequiredMixin, CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'reviews/review-form-page.html'
 
-def review_delete(request: HttpRequest, pk: int) -> HttpResponse:
-    review = get_object_or_404(Review, pk=pk)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = Product.objects.get(pk=self.kwargs['product_id'])
+        return context
 
-    if request.method == "POST":
-        product_id = review.product_id
-        review.delete()
-        return redirect('reviews:product_reviews', product_id=product_id)
+    def form_valid(self, form):
+        form.instance.product = Product.objects.get(pk=self.kwargs['product_id'])
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-    return render(request, 'reviews/review-delete-page.html', {'review': review})
+    def get_success_url(self):
+        return reverse('reviews:product_reviews', kwargs={'product_id':self.kwargs['product_id']})
 
-def top_products(request: HttpRequest) -> HttpResponse:
-    products = (
-        Product.objects
-        .annotate(avg_rating=Avg('reviews__rating'))
-        .exclude(avg_rating=None)
-        .order_by('-avg_rating')[:5]
-    )
-    return render(request, 'reviews/top-product-page.html', {'products': products})
+class ReviewEditView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'reviews/review-form-page.html'
+
+    def test_func(self):
+        return self.get_object().author == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = self.object.product
+        return context
+
+    def get_success_url(self):
+        return reverse('reviews:product_reviews',kwargs={'product_id': self.object.product_id}
+        )
+
+class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Review
+    template_name = 'reviews/review-delete-page.html'
+
+    def test_func(self):
+        return self.get_object().author == self.request.user
+
+    def get_success_url(self):
+        return reverse(
+            'reviews:product_reviews',
+            kwargs={'product_id': self.object.product_id}
+        )
+

@@ -5,7 +5,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'products:home' %}">Home</a></li>
+                {% if request.user.is_authenticated and request.user.is_staff %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'products:create' %}">Add product</a></li>
+                {% endif %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="{% url 'orders:order_list' %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orders</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -15,17 +17,27 @@
 {#                        <li><a class="dropdown-item" href="#">Completed Orders</a></li>#}
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'reviews:top_products' %}">Reviews</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'reviews:top_products' %}">Top rated</a></li>
             </ul>
-                <a class="btn btn-outline-dark"
-                href="{% if cart_order %}{% url 'orders:details' cart_order.order_number %}{% else %}#{% endif %}">
-                <i class="bi-cart-fill me-1"></i>Cart
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-dark">Logout</button>
+                        <i class="bi bi-person me-1"></i>
+                    </form>
+                {% else %}
+                    <a class="btn btn-outline-dark" href="{% url 'accounts:login' %}">
+                        <i class="bi bi-person me-1"></i>Login
+                    </a>
+                {% endif %}
+            <a class="btn btn-outline-dark" href="{% if cart_order %}{% url 'orders:details' cart_order.order_number %}{% else %}#{% endif %}">
+                <i class="bi-cart-fill me-1"></i>
                 {% if cart_order %}
                 <span class="badge bg-dark text-white ms-1 rounded-pill">
                 {{ cart_count }}
                 </span>
                 {% endif %}
-                </a>
+            </a>
         </div>
     </div>
 </nav>

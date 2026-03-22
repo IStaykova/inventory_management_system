@@ -1,13 +1,14 @@
 from django.urls import path
 
-from reviews.views import product_reviews, review_create, review_edit, review_delete, top_products
+from reviews.views import ReviewCreateView, ReviewEditView, ReviewDeleteView, \
+    TopReviewsListView, ProductReviewListView
 
 app_name = "reviews"
 
 urlpatterns = [
-    path('product/<int:product_id>/', product_reviews, name='product_reviews'),
-    path('product/<int:product_id>/add', review_create, name='review_create'),
-    path('edit/<int:pk>/', review_edit, name='review_edit'),
-    path('delete/<int:pk>/', review_delete, name='review_delete'),
-    path('top/', top_products, name='top_products'),
+    path('product/<int:product_id>/', ProductReviewListView.as_view(), name='product_reviews'),
+    path('product/<int:product_id>/add', ReviewCreateView.as_view(), name='review_create'),
+    path('edit/<int:pk>/', ReviewEditView.as_view(), name='review_edit'),
+    path('delete/<int:pk>/', ReviewDeleteView.as_view(), name='review_delete'),
+    path('top/', TopReviewsListView.as_view(), name='top_products'),
 ]

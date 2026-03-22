@@ -2,6 +2,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, ListView
 
 from inventory.forms import ProductForm, SearchForm
+from inventory.mixins import StaffRequiredMixin
 from inventory.models import Product
 from inventory.utils.pricing import apply_sale_price
 
@@ -26,7 +27,7 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'inventory/product-details-page.html'
 
-class ProductCreateView(CreateView):
+class ProductCreateView(StaffRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'inventory/product-create-page.html'
@@ -34,7 +35,7 @@ class ProductCreateView(CreateView):
     def get_success_url(self):
         return reverse('products:details', kwargs={'slug': self.object.slug})
 
-class ProductEditView(UpdateView):
+class ProductEditView(StaffRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'inventory/product-edit-page.html'
@@ -48,7 +49,7 @@ class ProductEditView(UpdateView):
     def get_success_url(self):
         return reverse('products:details', kwargs={'slug': self.object.slug})
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(StaffRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('products:home')
 

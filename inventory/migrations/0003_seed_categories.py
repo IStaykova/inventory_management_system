@@ -10,7 +10,7 @@ def create_categories(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('inventory', '0010_alter_product_options_alter_product_slug'),
+        ('inventory', '0002_initial'),
     ]
 
     operations = [

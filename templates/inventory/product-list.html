@@ -23,9 +23,9 @@
                 {% endif %}
 
                 {% if product.image %}
-                    <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}" />
+                    <img class="img-fluid" style="max-width: 200px;" src="{{ product.image.url }}" alt="{{ product.name }}" />
                 {% else %}
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="No image uploaded" />
+                    <img class="img-fluid" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="No image uploaded" />
                 {% endif %}
             <div class="card-body p-4">
             <div class="text-center">

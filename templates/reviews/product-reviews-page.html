@@ -7,12 +7,12 @@
     <div>
       <h3 class="mb-0">{{ product.name }}</h3>
         {% if product.image %}
-            <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}" />
+            <img class="img-fluid" style="max-width: 200px;" src="{{ product.image.url }}" alt="{{ product.name }}" />
         {% else %}
-            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="No image uploaded"/>
+            <img class="img-fluid" style="max-width: 200px;" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="No image uploaded"/>
         {% endif %}
       <div class="text-muted">
-        {% if avg_rating %}Rating:{{ avg_rating|floatformat:1 }} / 5{% else %}No rating yet!{% endif %}
+        {% if avg_rating %}Rating: {{ avg_rating|floatformat:1 }} / 5{% else %}No rating yet!{% endif %}
       </div>
     </div>
   <div class="mt-2 d-flex gap-2">
@@ -25,16 +25,18 @@
     <div class="card mb-2">
       <div class="card-body">
         <div class="d-flex justify-content-between">
-          <div class="fw-semibold">{{ r.author_name }}</div>
+          <div class="fw-semibold">{{ r.author.username }}</div>
           <div class="text-warning">{{ r.rating|stars }}</div>
         </div>
         <div class="text-muted small">{{ r.created_at }}</div>
         <p class="mb-0 mt-2">{{ r.text }}</p>
 
+      {% if r.author == request.user %}
         <div class="mt-2 d-flex gap-2">
           <a class="btn btn-outline-secondary btn-sm" href="{% url 'reviews:review_edit' r.pk %}">Edit</a>
           <a class="btn btn-outline-danger btn-sm" href="{% url 'reviews:review_delete' r.pk %}">Delete</a>
         </div>
+      {% endif %}
       </div>
     </div>
   {% empty %}

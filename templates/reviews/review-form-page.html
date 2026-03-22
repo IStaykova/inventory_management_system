@@ -5,13 +5,6 @@
 
   <form method="post">
     {% csrf_token %}
-
-    <div class="mb-3">
-      <label class="form-label">Your name</label>
-      {{ form.author_name }}
-      {% if form.author_name.errors %}<div class="text-danger small">{{ form.author_name.errors.0 }}</div>{% endif %}
-    </div>
-
     <div class="mb-3">
       <label class="form-label">Rating (1–5)</label>
       {{ form.rating }}

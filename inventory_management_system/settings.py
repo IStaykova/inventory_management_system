@@ -25,12 +25,13 @@ SECRET_KEY = 'django-insecure-!7+!=*p()t%aa0ng5se-u&o54&f*pi=eq7s=8btfgs5y=5u0)9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  # For DEBUG False ['127.0.0.1', 'localhost']
 
 PROJECT_APPS = [
     'inventory',
     'orders',
     'reviews',
+    'accounts',
 ]
 # Application definition
 
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'inventory_management_system.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "inventory_project1_2026",
+        "NAME": "inventory_shop_db",
         "USER": "postgres",
         "PASSWORD": "admin100255",
         "HOST": "127.0.0.1",
@@ -85,9 +86,14 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'accounts.AppUser'
+
+LOGIN_REDIRECT_URL = 'products:home'
+LOGOUT_REDIRECT_URL = 'products:home'
+LOGIN_URL = 'accounts:login'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
