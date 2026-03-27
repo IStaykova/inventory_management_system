@@ -14,10 +14,8 @@ class OrderCreateForm(forms.ModelForm):
             "shipping_address": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         }
 
-
-#
-# class OrderStatusForm(forms.ModelForm):
-#     class Meta:
-#         model = Order
-#         fields = ["status"]
-#         widgets = {"status": forms.Select(attrs={"class": "form-select"})}
+class OrderStatusForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ["status"]
+        widgets = {"status": forms.Select(attrs={"class": "form-select"})}

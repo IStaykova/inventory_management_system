@@ -35,9 +35,9 @@
         {% if form.image.errors %}<div class="text-danger small">{{ form.image.errors.0 }}</div>{% endif %}
     </div>
     <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
+        <label for="category" class="form-label" aria-label="">Category</label>
         {{ form.category }}
-        {% if form.category.errors %}<div class="text-danger small">{{ form.category.errors.0 }}</div>{% endif %}
+{#        {% if form.category.errors %}<div class="text-danger small">{{ form.category.errors.0 }}</div>{% endif %}#}
     </div>
 
     <button class="btn btn-primary">Create Product</button>

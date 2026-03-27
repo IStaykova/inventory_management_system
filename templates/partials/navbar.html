@@ -17,7 +17,7 @@
 {#                        <li><a class="dropdown-item" href="#">Completed Orders</a></li>#}
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'reviews:top_products' %}">Top rated</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'reviews:top_products' %}">Top products</a></li>
             </ul>
                 {% if request.user.is_authenticated %}
                     <a class="btn btn-outline-dark" href="{% url 'accounts:profile_details' %}">Profile</a>

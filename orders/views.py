@@ -1,20 +1,20 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Prefetch
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, TemplateView, FormView
+from django.views.generic import ListView, TemplateView, FormView, UpdateView, DetailView
 from django.views import View
 
 from accounts.models import Address
 from inventory.models import Product
-from orders.forms import OrderCreateForm
+from orders.forms import OrderCreateForm, OrderStatusForm
 from orders.mixins import StaffRequiredMixin
 from orders.models import Order, OrderedProduct
 from orders.services import cart
 from orders.services.cart import get_cart
 from orders.services.checkout import CreateOrderError, create_order
-
 
 class OrderListView(StaffRequiredMixin, ListView):
     model = Order
@@ -25,9 +25,8 @@ class OrderListView(StaffRequiredMixin, ListView):
     def get_queryset(self):
         return (
             Order.objects
-            .exclude(status=Order.Status.CART)
-            .select_related('customer_name')
-            .order_by('created_at')
+            .select_related('user')
+            .order_by('date_ordered')
         )
 
 class CartDetailView(TemplateView):
@@ -120,19 +119,59 @@ class OrderCreateView(LoginRequiredMixin, FormView):
         )
         return super().form_valid(form)
 
-# def order_status(request: HttpRequest, order_number) -> HttpResponse:
-#     order = get_object_or_404(Order, order_number=order_number)
-#
-#     if request.method == "POST":
-#         form = OrderStatusForm(request.POST, instance=order)
-#         if form.is_valid():
-#             form.save()
-#             return redirect("orders:details", order_number=order_number)
-#     else:
-#         form = OrderStatusForm(instance=order)
-#
-#     return render(request, 'orders/order-status-page.html', {'order': order, 'form': form})
-#
+class OrderStatusUpdateView(StaffRequiredMixin, UpdateView):
+    model = Order
+    form_class = OrderStatusForm
+    template_name = 'orders/order-status-page.html'
+    slug_field = 'order_number'
+    slug_url_kwarg = 'order_number'
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def form_valid(self, form):
+        messages.success(self.request, "Order status updated successfully.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'orders:details',
+            kwargs={'order_number': self.object.order_number}
+        )
+
+class OrderDetailView(DetailView):
+    template_name = 'orders/order-details-page.html'
+    model = Order
+    context_object_name = 'order'
+    slug_field = 'order_number'
+    slug_url_kwarg = 'order_number'
+
+    def get_queryset(self):
+        return (
+            Order.objects
+            .select_related('user')
+            .prefetch_related(
+                Prefetch(
+                    'ordered_products',
+                    queryset=OrderedProduct.objects.select_related('product'),
+                )
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        ordered_products = self.object.ordered_products.all()
+
+        for item in ordered_products:
+            item.item_total = item.price * item.quantity
+
+        total_order_price = sum(item.item_total for item in ordered_products)
+
+        context['ordered_products'] = ordered_products
+        context['total_order_price'] = total_order_price
+        return context
+
+
 # def order_delete(request: HttpRequest, order_number):
 #     order = get_object_or_404(Order, order_number=order_number)
 #     if request.method == "POST":
