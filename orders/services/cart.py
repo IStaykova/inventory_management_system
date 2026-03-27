@@ -104,12 +104,10 @@ def decrease_item_qty(request, product_id:int) -> None:
 
 def remove_cart_item(request, product_id:int) -> None:
     cart = _get_raw_cart(request)
-    key = str(product_id)
-
-    if key in cart:
-        del cart[key]
-        _save_cart(request, cart)
+    cart.pop(str(product_id), None)
+    _save_cart(request, cart)
 
 def clear_cart(request) -> None:
     request.session.pop(CART_SESSION_KEY, None)
     request.session.modified = True
+

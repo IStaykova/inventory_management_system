@@ -1,17 +1,10 @@
 from django.contrib import admin
 
+from accounts.models import Address
 from orders.models import Order, OrderedProduct
 
-
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('order_number', 'customer_name', 'created_at', 'status')
-    list_filter = ('status', 'created_at')
-    search_fields = ('order_number', 'customer_name')
-    ordering = ('-created_at',)
-
-@admin.register(OrderedProduct)
-class OrderedProductAdmin(admin.ModelAdmin):
-    list_display = ('order', 'product_id', 'quantity')
+admin.site.register(Order)
+admin.site.register(OrderedProduct)
+admin.site.register(Address)
 
     

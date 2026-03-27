@@ -5,54 +5,88 @@
 
 {% block content %}
 <div class="container py-3">
-  <form method="post">
-    {% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
 
-    <div class="row fw-bold border-bottom pb-2 mb-2">
-      <div class="col-6">Name</div>
-      <div class="col-2 text-end">Price</div>
-      <div class="col-2 text-end">Qty</div>
-      <div class="col-2 text-end">Total</div>
-    </div>
+        <h4 class="mb-3">Order summary</h4>
 
-    <div class="row align-items-start mb-3">
-      <div class="col-6">
-        {{ product.name }}
-        <div class="text-muted small">In stock: {{ product.stock_quantity }}</div>
-      </div>
-
-      <div class="col-2 text-end">
-        <span id="unit-price" data-price="{{ product.price }}">{{ product.price }}</span>
-      </div>
-
-      <div class="col-2 text-end">
-        {{ form.quantity }}
-        {% if form.quantity.errors %}
-          <div class="text-danger small mt-1">
-            {{ form.quantity.errors|striptags }}
-          </div>
-        {% endif %}
-      </div>
-
-      <div class="col-2 text-end">
-        <strong id="total-price">{{ product.price }}</strong>
-      </div>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Customer name</label>
-      {{ form.customer_name }}
-      {% if form.customer_name.errors %}
-        <div class="text-danger small mt-1">
-          {{ form.customer_name.errors|striptags }}
+        <div class="row fw-bold border-bottom pb-2 mb-2">
+            <div class="col-6">Product</div>
+            <div class="col-2 text-end">Price</div>
+            <div class="col-2 text-end">Qty</div>
+            <div class="col-2 text-end">Total</div>
         </div>
-      {% endif %}
-    </div>
 
-    <button type="submit" class="btn btn-primary">Create order</button>
-    <a href="{% url 'products:home' %}" class="btn btn-dark">Back</a>
-  </form>
+        {% for item in cart_data.items %}
+            <div class="row align-items-start mb-3">
+                <div class="col-6">{{ item.product.name }}</div>
+                <div class="col-2 text-end">{{ item.unit_price }}</div>
+                <div class="col-2 text-end">{{ item.quantity }}</div>
+                <div class="col-2 text-end">
+                    <strong>{{ item.line_total }}</strong>
+                </div>
+            </div>
+        {% empty %}
+            <div class="alert alert-warning">
+                Your cart is empty.
+            </div>
+        {% endfor %}
+
+        <div class="row border-top pt-3 mb-4">
+            <div class="col-10 text-end fw-bold">Total:</div>
+            <div class="col-2 text-end fw-bold">{{ cart_data.total_price }}</div>
+        </div>
+
+        <h4 class="mb-3">Delivery information</h4>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="text-danger small mt-1">{{ form.first_name.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last name</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="text-danger small mt-1">{{ form.last_name.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone number</label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}
+                        <div class="text-danger small mt-1">{{ form.phone_number.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="text-danger small mt-1">{{ form.email.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-0">
+                    <label for="{{ form.shipping_address.id_for_label }}" class="form-label">Shipping address</label>
+                    {{ form.shipping_address }}
+                    {% if form.shipping_address.errors %}
+                        <div class="text-danger small mt-1">{{ form.shipping_address.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if cart_data.items %}
+            <button type="submit" class="btn btn-primary">Send order</button>
+        {% endif %}
+        <a href="{% url 'orders:cart' %}" class="btn btn-dark">Back</a>
+    </form>
 </div>
-
-<script src="{% static 'js/total_price_calculation.js' %}"></script>
 {% endblock %}

@@ -61,7 +61,7 @@
     </div>
 
     <div class="d-grid gap-2 d-sm-flex mt-4">
-        <form method="post" action="{% url 'orders:checkout' %}" class="d-inline">
+        <form method="post" action="{% url 'orders:create' %}" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="btn btn-sm btn-primary">Checkout</button>
         </form>

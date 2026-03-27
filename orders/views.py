@@ -2,14 +2,19 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, TemplateView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, TemplateView, FormView
 from django.views import View
 
+from accounts.models import Address
 from inventory.models import Product
-from orders.forms import OrderAddProductForm, OrderStatusForm
+from orders.forms import OrderCreateForm
 from orders.mixins import StaffRequiredMixin
 from orders.models import Order, OrderedProduct
 from orders.services import cart
+from orders.services.cart import get_cart
+from orders.services.checkout import CreateOrderError, create_order
+
 
 class OrderListView(StaffRequiredMixin, ListView):
     model = Order
@@ -78,32 +83,42 @@ class CartItemRemoveView(View):
 
         return redirect('orders:cart')
 
-class CheckoutView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        cart_data = cart.get_cart(request)
-
-        if not cart_data['items']:
-            messages.error(request, 'Your cart is empty.')
-            return redirect('orders:cart')
-
-        return redirect('orders:create_order')
-
-class CreateOrderView(LoginRequiredMixin, TemplateView):
+class OrderCreateView(LoginRequiredMixin, FormView):
     template_name = 'orders/order-create-page.html'
+    form_class = OrderCreateForm
+    success_url = reverse_lazy('products:home')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        profile = self.request.user.profile
+
+        initial['first_name'] = profile.first_name
+        initial['last_name'] = profile.last_name
+        initial['phone_number'] = profile.phone_number
+        initial['email'] = self.request.user.email
+
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart_data = cart.get_cart(self.request)
-        context['items'] = cart_data['items']
-        context['total_price'] = cart_data['total_price']
+        context['cart_data'] = get_cart(self.request)
         return context
 
-    def post(self, request, *args, **kwargs):
-        order = checkout.create_order_from_cart(request)
-        return redirect('orders:details', order_number=order.order_number)
+    def form_valid(self, form):
+        try:
+            create_order(
+                request=self.request,
+                cleaned_data=form.cleaned_data,
+            )
+        except CreateOrderError as e:
+            messages.error(self.request, str(e))
+            return redirect('orders:create')
 
-
-
+        messages.success(
+            self.request,
+            'Your order has been placed successfully! We will contact you soon.',
+        )
+        return super().form_valid(form)
 
 # def order_status(request: HttpRequest, order_number) -> HttpResponse:
 #     order = get_object_or_404(Order, order_number=order_number)
