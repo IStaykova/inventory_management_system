@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block header_subtitle %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <h3 class="mb-4">Profile</h3>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">First name</label>
+            {{ form.first_name }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Last name</label>
+            {{ form.last_name }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Date of birth</label>
+            {{ form.date_of_birth }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Phone number</label>
+            {{ form.phone_number }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Profile picture (URL)</label>
+            {{ form.profile_picture }}
+        </div>
+
+        <button class="btn btn-primary">Save</button>
+
+    </form>
+
+</div>
+{% endblock %}

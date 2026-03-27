@@ -43,10 +43,12 @@
                 <div class="text-center">
                 <a class="btn btn-outline-dark mt-auto" href="{% url 'products:details' product.slug %}">Details</a>
                 {% if product.stock_quantity > 0 %}
-                <a class="btn btn-outline-dark mt-auto"
-                href="{% url 'orders:create' product.pk %}">Buy</a>
+                    <form method="post" action="{% url 'orders:add_item' product.pk %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-dark mt-auto">Buy</button>
+                    </form>
                 {% else %}
-                <button class="btn btn-outline-secondary" disabled>Out of stock</button>
+                    <button class="btn btn-outline-secondary" disabled>Out of stock</button>
                 {% endif %}
                 </div>
                 </div></div>

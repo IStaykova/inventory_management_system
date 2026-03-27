@@ -34,3 +34,4 @@ Inter Store started as an Inventory management system and expanded to an online 
 - Authentication and authorization logic
 - Update on the order and cart functionality
 - Update on the UX
+- #TODO add explanation for test of the application 

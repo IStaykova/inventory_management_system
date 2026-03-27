@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block header_subtitle %}Cart{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4"><div>
+        <div class="text-muted small">Hello, {{ user.username }}! </div>
+        </div>
+    </div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Name</th>
+            <th>Qty</th>
+            <th>Unit price</th>
+            <th>Category</th>
+            <th>Total price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <form method="post" action="{% url 'orders:dec_item' item.product.pk %}" class="m-0">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-secondary">−</button>
+                    </form>
+                    <span class="badge text-bg-dark px-3 py-2">{{ item.quantity }}</span>
+                    <form method="post" action="{% url 'orders:inc_item' item.product.pk %}" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-primary">+</button>
+                    </form>
+                </div>
+            </td>
+
+            <td>{{ item.unit_price }}</td>
+            <td>{{ item.product.category }}</td>
+            <td>{{ item.line_total }}</td>
+            <td>
+                <form method="post" action="{% url 'orders:remove_item' item.product.pk %}" class="m-0">
+                    {% csrf_token %}
+                    <button
+                        class="btn btn-sm btn-outline-danger"
+                        title="Remove"
+                        onclick="return confirm('Are you sure you want to delete?')">
+                        🗑
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+        <div class="text-end fw-bold fs-5 p-3 border-top">Total amount: {{ total_price }} $</div>
+    </div>
+
+    <div class="d-grid gap-2 d-sm-flex mt-4">
+        <form method="post" action="{% url 'orders:checkout' %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-primary">Checkout</button>
+        </form>
+        <a class="btn btn-sm btn-outline-dark" href="{% url 'products:home' %}">Back</a>
+    </div>
+    </div>
+
+{% endblock %}
