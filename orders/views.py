@@ -16,18 +16,17 @@ from orders.services import cart
 from orders.services.cart import get_cart
 from orders.services.checkout import CreateOrderError, create_order
 
-class OrderListView(StaffRequiredMixin, ListView):
+class OrderListView(LoginRequiredMixin, ListView):
     model = Order
     template_name = 'orders/order-list-page.html'
     context_object_name = 'orders'
     paginate_by = 10
 
     def get_queryset(self):
-        return (
-            Order.objects
-            .select_related('user')
-            .order_by('date_ordered')
-        )
+        queryset = Order.objects.select_related('user').order_by('date_ordered')
+        if self.request.user.is_staff:
+            return queryset
+        return queryset.filter(user=self.request.user)
 
 class CartDetailView(TemplateView):
     template_name = 'orders/cart-page.html'
@@ -126,20 +125,14 @@ class OrderStatusUpdateView(StaffRequiredMixin, UpdateView):
     slug_field = 'order_number'
     slug_url_kwarg = 'order_number'
 
-    def test_func(self):
-        return self.request.user.is_staff
-
     def form_valid(self, form):
         messages.success(self.request, "Order status updated successfully.")
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse(
-            'orders:details',
-            kwargs={'order_number': self.object.order_number}
-        )
+        return reverse_lazy('orders:order_list')
 
-class OrderDetailView(DetailView):
+class OrderDetailView(LoginRequiredMixin, DetailView):
     template_name = 'orders/order-details-page.html'
     model = Order
     context_object_name = 'order'
@@ -170,18 +163,3 @@ class OrderDetailView(DetailView):
         context['ordered_products'] = ordered_products
         context['total_order_price'] = total_order_price
         return context
-
-
-# def order_delete(request: HttpRequest, order_number):
-#     order = get_object_or_404(Order, order_number=order_number)
-#     if request.method == "POST":
-#         order.delete()
-#         return redirect("orders:order_list")
-#
-
-# def order_edit(request: HttpRequest, order_number) -> HttpResponse:
-#     order = get_object_or_404(Order, order_number=order_number)
-#     items = OrderedProduct.objects.filter(order=order).select_related('product')
-#     add_form = OrderAddProductForm()
-#     return render(request, 'orders/order-edit-page.html', {'order': order, 'items': items, 'add_form': add_form})
-#

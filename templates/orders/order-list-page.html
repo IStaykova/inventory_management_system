@@ -1,42 +1,66 @@
 {% extends "base.html" %}
+
 {% block header_subtitle %}Orders{% endblock %}
 
 {% block content %}
 <div class="card shadow-sm">
-  <div class="card-body">
-  <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th>Order number</th>
-            <th>Created at</th>
-            <th>Username</th>
-            <th>Status</th>
-            <th class="text-end">Actions</th>
-          </tr>
-        </thead>
-      {% for order in orders %}
-        <tbody>
-            <tr>
-              <td class="fw-semibold">#{{ order.order_number|stringformat:'s'|slice:':8' }}</td>
-              <td>{{ order.date_ordered }}</td>
-              <td>{{ order.first_name }} {{ order.last_name }}</td>
-              <td><span class="badge bg-info text-dark">{{ order.status }}</span></td>
-              <td class="text-end">
-                <a class="btn btn-outline-dark btn-sm" href="{% url 'orders:order_details' order.order_number %}">
-                  Details
-                </a>
-              </td>
-            </tr>
-        </tbody>
-      {% empty %}
-        <tr>
-          <td colspan="4" class="text-center text-muted py-4">No current orders.</td>
-        </tr>
-      {% endfor %}
+    <div class="card-body">
 
-      </table>
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Order number</th>
+                        <th>Created at</th>
+                        <th>Username</th>
+                        <th>Status</th>
+
+                        {% if request.user.is_authenticated and request.user.is_staff %}
+                            <th class="text-end">Staff actions</th>
+                        {% endif %}
+
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td class="fw-semibold">
+                                #{{ order.order_number|stringformat:'s'|slice:':8' }}
+                            </td>
+                            <td>{{ order.date_ordered }}</td>
+                            <td>{{ order.first_name }} {{ order.last_name }}</td>
+
+                            <td><span class="badge bg-info text-dark">{{ order.status }}</span></td>
+
+                            {% if request.user.is_staff %}
+                            <td class="text-end">
+                                <a class="btn btn-outline-dark btn-sm"
+                                   href="{% url 'orders:status' order.order_number %}">
+                                    Change status
+                                </a>
+                            </td>
+                            {% endif %}
+
+                            <td class="text-end">
+                                <a class="btn btn-outline-dark btn-sm"
+                                   href="{% url 'orders:order_details' order.order_number %}">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+            <h2 class="text-center text-muted py-4">No current orders!</h2>
+        {% endif %}
+
     </div>
-  </div>
 </div>
 {% endblock %}

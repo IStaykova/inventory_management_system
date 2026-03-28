@@ -8,15 +8,9 @@
                 {% if request.user.is_authenticated and request.user.is_staff %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'products:create' %}">Add product</a></li>
                 {% endif %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="{% url 'orders:order_list' %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orders</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{% url 'orders:order_list' %}">All Orders</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-{#                        <li><a class="dropdown-item" href="#">New orders</a></li>#}
-{#                        <li><a class="dropdown-item" href="#">Completed Orders</a></li>#}
-                    </ul>
-                </li>
+                {% if request.user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'orders:order_list' %}">Orders</a></li>
+                {% endif %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'reviews:top_products' %}">Top products</a></li>
             </ul>
                 {% if request.user.is_authenticated %}

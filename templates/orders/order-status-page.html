@@ -5,7 +5,7 @@
     <form method="post" action="{% url 'orders:status' order.order_number %}">
     {% csrf_token %}
         <div class="card-body text-center">
-        <h2 class="h4 mb-2">Update order status</h2>
+        <h2 class="h3 mb-3">Update order status</h2>
         <p class="mb-1">Order: <strong>#{{ order.order_number|stringformat:'s'|slice:':8' }}</strong></p>
         <p class="mb-4">
         Current status:

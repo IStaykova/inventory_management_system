@@ -4,7 +4,7 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0">Order #{{ order.order_number|stringformat:'s'|slice:':8' }}</h4>
-        <span class="badge bg-dark">{{ order.status }}</span>
+        <span class="badge bg-info text-dark">{{ order.status }}</span>
     </div>
 
     <div class="card shadow-sm mb-4">

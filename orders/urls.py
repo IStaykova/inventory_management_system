@@ -1,7 +1,7 @@
 from django.urls import path, include
 from orders.views import OrderListView, CartDetailView, CartItemIncreaseView, AddToCartView, \
     CartItemDecreaseView, \
-    CartItemRemoveView, OrderCreateView, OrderDetailView
+    CartItemRemoveView, OrderCreateView, OrderDetailView, OrderStatusUpdateView
 
 app_name = 'orders'
 
@@ -16,12 +16,8 @@ urlpatterns = [
     path('cart/remove/<int:product_id>/', CartItemRemoveView.as_view(), name='remove_item'),
 
     path('<uuid:order_number>/', include([
-        path('details', OrderDetailView.as_view(), name='order_details')
-        # path('status/', order_status, name='status'),
-        # path('edit/', order_edit, name='edit'),
-        # path('delete/', order_delete, name='delete'),
-
+        path('details', OrderDetailView.as_view(), name='order_details'),
+        path('status/', OrderStatusUpdateView.as_view(), name='status'),
     ])),
-
     ]
 
