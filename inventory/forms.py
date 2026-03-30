@@ -13,7 +13,7 @@ class ProductForm(forms.ModelForm):
             'price': forms.NumberInput(attrs={"class": "form-control", "min": "1", "step": "0.01"}),
             'stock_quantity': forms.NumberInput(attrs={"class": "form-control", "min": "1"}),
             'image': forms.FileInput(attrs={"class": "form-control"}),
-            'category': forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter category: Hardware / Software / Accessories / Periphery"}),
+            'category': forms.Select(attrs={"class": "form-control"}),
         }
         error_messages = {
             'name': { "required": "Please enter product name."},
