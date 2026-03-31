@@ -4,7 +4,7 @@ services:
     build: .
     container_name: inter_store_web
     restart: always
-    command: gunicorn inter_store.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn inventory_management_system.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/app
       - static_volume:/app/static_files
