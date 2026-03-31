@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    container_name: inter_store_web
+    restart: always
+    command: gunicorn inter_store.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/static_files
+    depends_on:
+      - db
+    environment:
+      - DEBUG=0
+      - DATABASE_URL=postgres://postgres:admin100255@db:5432/inter_store
+
+  db:
+    image: postgres:16
+    container_name: inter_store_db
+    restart: always
+    environment:
+      POSTGRES_DB: inter_store
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin100255
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  nginx:
+    image: nginx:latest
+    container_name: inter_store_nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:/app/static_files
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
