@@ -15,6 +15,8 @@ from orders.models import Order, OrderedProduct
 from orders.services import cart
 from orders.services.cart import get_cart
 from orders.services.checkout import CreateOrderError, create_order
+from inventory_management_system import settings
+from inventory_management_system.services.emails import send_template_email
 
 class OrderListView(LoginRequiredMixin, ListView):
     model = Order
@@ -104,17 +106,34 @@ class OrderCreateView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         try:
-            create_order(
+            order = create_order(
                 request=self.request,
                 cleaned_data=form.cleaned_data,
             )
+            send_template_email(
+                to_email=self.request.user.email,
+                template_id=settings.SENDGRID_ORDER_CONFIRMATION_TEMPLATE,
+                dynamic_data={
+                    "name": self.request.user.username,
+                    "products": [
+                        {
+                            "name": item.product.name,
+                            "quantity": item.quantity,
+                            "price": str(item.price),
+                        }
+                        for item in order.ordered_products.all()
+                    ],
+                    "total_price": str(order.amount_paid),
+                },
+            )
+
         except CreateOrderError as e:
             messages.error(self.request, str(e))
             return redirect('orders:create')
 
         messages.success(
             self.request,
-            'Your order has been placed successfully! We will contact you soon.',
+            'Your order has been placed successfully! You will receive details by email',
         )
         return super().form_valid(form)
 

@@ -2,15 +2,17 @@
 {% block header_subtitle %}Products catalog{% endblock %}
 
 {% block content %}
-<form class="row gy-5 gx-6 align-items-center">
+<form class="gy-3">
     <div class="mb-3">
         {{ form.searched_name }}
         <button class="btn btn-outline-dark" type="submit">
         <img src="/static/images/search.png" height="25" alt="search">
         </button>
+        {% if request.GET.searched_name %}
         <a href="{% url 'products:home' %}" class="btn btn-outline-dark">
         <img src="/static/images/home_icon.png" height="25" alt="home">
         </a>
+        {% endif %}
     </div>
 </form>
 <div class="container px-4 px-lg-5 mt-5">

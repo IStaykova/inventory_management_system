@@ -63,7 +63,8 @@
     <div class="d-grid gap-2 d-sm-flex mt-4">
         <form method="post" action="{% url 'orders:create' %}" class="d-inline">
             {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-primary">Checkout</button>
+            <button type="submit" class="btn btn-sm btn-primary"
+            {% if total_price == 0 %} disabled {% endif %}>Checkout</button>
         </form>
         <a class="btn btn-sm btn-outline-dark" href="{% url 'products:home' %}">Back</a>
     </div>

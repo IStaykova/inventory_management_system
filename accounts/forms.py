@@ -40,3 +40,6 @@ class AddressForm(forms.ModelForm):
             'city': forms.TextInput(attrs={"class": "form-control"}),
             'postal_code': forms.TextInput(attrs={"class": "form-control"}),
         }
+
+class PasswordResetRequestForm(forms.Form):
+    email = forms.EmailField()

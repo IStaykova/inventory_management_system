@@ -12,12 +12,12 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     </head>
-    <body class="d-flex flex-column min-vh-100">
+    <body class="d-flex flex-column min-vh-100 overflow-x-hidden">
 
         {% include "partials/navbar.html" %}
 
         <header class="bg-dark py-1">
-            <div class="container px-3 px-lg-4 my-2">
+            <div class="container px-3 my-2">
                 <div class="text-center text-white">
                     <h1 class="display-4 fw-bolder">Inter Store</h1>
                     <p class="lead fw-normal text-white-50 mb-0">{% block header_subtitle %}{% endblock %}</p>
