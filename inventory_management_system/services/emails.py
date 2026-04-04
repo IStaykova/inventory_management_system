@@ -1,6 +1,7 @@
 from django.conf import settings
-from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from sendgrid import SendGridAPIClient
+
 
 def send_template_email(*, to_email, template_id, dynamic_data):
     message = Mail(
