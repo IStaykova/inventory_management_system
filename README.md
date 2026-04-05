@@ -32,15 +32,14 @@ http://13.51.236.3/
 ```
 ---
 ### ⚠️ Important
-Project requires .env file. SendGrid credentials are required for emails. 
-Without them, password reset and email features will not work.
+- Project requires .env file. SendGrid credentials are required for emails. 
+Without them, password reset and email features will not work. Credentials are provided for test usage only.
 ---
 
 ## Environment variables
 Setup .env file
 
-Create a `.env` file in the root directory and copy the following variables:
-Default values are set to "" for SendGrid credentials if you don't have profile.
+Create an `.env` file in the root directory and copy the following variables:
 
 ```
 SECRET_KEY=your-secret-key
@@ -51,11 +50,11 @@ DB_USER=postgres
 DB_PASSWORD=your_password
 DB_HOST=inter_store_db
 DB_PORT=5432
-SENDGRID_API_KEY=your_sendgrid_api_key
-SENDGRID_FROM_EMAIL=your_sendgrid_email
-SENDGRID_CHANGE_PASSWORD_TEMPLATE=your_change_password_template
-SENDGRID_ORDER_CONFIRMATION_TEMPLATE=your_order_confirmation_template
-SENDGRID_REGISTER_TEMPLATE=your_register_template
+SENDGRID_API_KEY=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
+SENDGRID_FROM_EMAIL=i_staykova@abv.bg
+SENDGRID_CHANGE_PASSWORD_TEMPLATE=d-04d956cfe2eb43848f5918379fdf17b3
+SENDGRID_ORDER_CONFIRMATION_TEMPLATE=d-ea9892bc866b4100b0e0cd0a746ab38b
+SENDGRID_REGISTER_TEMPLATE=d-a924246456374253859c7e5e5504d3f5
 ```
 ```
 Admin test account:
