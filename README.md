@@ -8,16 +8,31 @@ Inter Store started as an Inventory management system and expanded to an online 
 ## Run the project
 - Windows
 ```
-</> Bash
 git clone https://github.com/IStaykova/inventory_management_system
 cd inventory_management_system
+```
+create .env and add your variables → see [Environment variables](#environment-variables)
+```
+vim .env
 
-# create .env and add your variables [see Environment variables](#environment-variables)
-
+## When ready → ESC → :wq → Enter
+```
+Continue with Docker setup
+```
 docker-compose up --build
 docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py collectstatic --noinput
 ```
+### 🌐 Open
+```
+http://127.0.0.1:8000/
+```
+---
+### ⚠️ Important
+- Project requires .env file. SendGrid credentials are required for emails. 
+Without them, password reset and email features will not work
+---
+
 ## Environment variables
 Setup .env file
 
@@ -31,11 +46,14 @@ DB_USER=postgres
 DB_PASSWORD=your_password
 DB_HOST=localhost
 DB_PORT=5432
-SENDGRID_API_KEY=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
-SENDGRID_FROM_EMAIL=i_staykova@abv.bg
-SENDGRID_CHANGE_PASSWORD_TEMPLATE=d-04d956cfe2eb43848f5918379fdf17b3
-SENDGRID_ORDER_CONFIRMATION_TEMPLATE=d-ea9892bc866b4100b0e0cd0a746ab38b
-SENDGRID_REGISTER_TEMPLATE=d-a924246456374253859c7e5e5504d3f5
+```
+SendGrid is optional. If not provided, email functionality will not work.
+```
+SENDGRID_API_KEY=your_sendgrid_api_key
+SENDGRID_FROM_EMAIL=your_sendgrid_email
+SENDGRID_CHANGE_PASSWORD_TEMPLATE=your_change_password_template
+SENDGRID_ORDER_CONFIRMATION_TEMPLATE=your_order_confirmation_template
+SENDGRID_REGISTER_TEMPLATE=your_register_template
 ```
 
 ## Features
@@ -64,7 +82,3 @@ SENDGRID_REGISTER_TEMPLATE=d-a924246456374253859c7e5e5504d3f5
 - Custom 404 page
 - User-friendly validation messages
 ---
-
-### ⚠️ Important
-- Project requires .env file. SendGrid credentials are required for emails. 
-Without them, password reset and email features will not work
