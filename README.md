@@ -12,7 +12,7 @@ Inter Store started as an Inventory management system and expanded to an online 
 git clone https://github.com/IStaykova/inventory_management_system
 cd inventory_management_system
 
-# create .env and add your variables ([see Environment variables](#environment-variables)) 
+# create .env and add your variables [see Environment variables](#environment-variables)
 
 docker-compose up --build
 docker-compose exec web python manage.py migrate
