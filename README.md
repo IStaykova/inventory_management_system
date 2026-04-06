@@ -6,6 +6,16 @@ Django Web application for managing products and customer orders.
 Inter Store started as an Inventory management system and expanded to an online store. Main task is to have full functionality and options for an online store.
 
 ## Run the project
+
+```
+Admin test account:
+inter_admin@gmail.com
+12345interadmin
+```
+### 🌐 Open
+```
+http://13.51.236.3/
+```
 - Windows
 ```
 git clone https://github.com/IStaykova/inventory_management_system
@@ -25,10 +35,6 @@ docker-compose build
 docker-compose up -d
 docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py collectstatic --noinput
-```
-### 🌐 Open
-```
-http://13.51.236.3/
 ```
 ---
 ### ⚠️ Important
@@ -55,11 +61,7 @@ SENDGRID_FROM_EMAIL=i_staykova@abv.bg
 SENDGRID_CHANGE_PASSWORD_TEMPLATE=d-04d956cfe2eb43848f5918379fdf17b3
 SENDGRID_ORDER_CONFIRMATION_TEMPLATE=d-ea9892bc866b4100b0e0cd0a746ab38b
 ```
-```
-Admin test account:
-inter_admin@gmail.com
-12345interadmin
-```
+---
 ## Features
 ### User - Authentication and authorization
 - Register/ login + permissions
