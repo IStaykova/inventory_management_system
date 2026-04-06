@@ -1,11 +1,8 @@
-from itertools import product
-
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordChangeDoneView
-from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes
@@ -25,16 +22,7 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('accounts:login')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-
-        send_template_email(
-            to_email=self.object.email,
-            template_id=settings.SENDGRID_REGISTER_TEMPLATE,
-            dynamic_data={
-                "name": self.object.username,
-            },
-        )
-        return response
+       return super().form_valid(form)
 
 class AppLoginView(LoginView):
     form_class = AppUserLoginForm
